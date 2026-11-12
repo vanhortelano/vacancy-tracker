@@ -1,0 +1,269 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function dormPath(code) {
+      return /databases/$(database)/documents/dorms/$(code);
+    }
+    function isDormOwner(code) {
+      return signedIn() && get(dormPath(code)).data.ownerUid == request.auth.uid;
+    }
+    function isDormViewer(code) {
+      return signedIn() && exists(/databases/$(database)/documents/dorms/$(code)/viewers/$(request.auth.uid));
+    }
+
+    // Admin data: every account can only touch its own records (unchanged).
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // Account transfer: the old owner may write into the new owner's space, only after the transfer is approved.
+      allow write: if request.auth != null
+        && exists(/databases/$(database)/documents/incomingTransfer/$(userId))
+        && get(/databases/$(database)/documents/incomingTransfer/$(userId)).data.fromUid == request.auth.uid
+        && get(/databases/$(database)/documents/accountTransfers/$(get(/databases/$(database)/documents/incomingTransfer/$(userId)).data.code)).data.status == 'approved';
+    }
+
+    // ---- Account (data) transfer between two Branch Admin accounts -----
+    match /accountTransfers/{code} {
+      allow get: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.fromUid == request.auth.uid
+        && request.resource.data.status == 'open'
+        && request.resource.data.keys().hasOnly(['fromUid', 'fromEmail', 'purpose', 'expiresAt', 'status'])
+        && request.resource.data.expiresAt > request.time
+        && request.resource.data.expiresAt <= request.time + duration.value(24, 'h');
+      // the new account asks to receive
+      allow update: if signedIn()
+        && resource.data.status == 'open'
+        && resource.data.expiresAt > request.time
+        && request.auth.uid != resource.data.fromUid
+        && request.resource.data.status == 'requested'
+        && request.resource.data.toUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'toUid', 'toEmail'])
+        || signedIn()
+        && resource.data.fromUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status in ['open', 'approved', 'rejected', 'done'];
+      allow delete: if signedIn() && resource.data.fromUid == request.auth.uid;
+    }
+    match /incomingTransfer/{toUid} {
+      allow read, delete: if signedIn() && request.auth.uid == toUid;
+      allow create, update: if signedIn() && request.auth.uid == toUid
+        && request.resource.data.keys().hasOnly(['code', 'fromUid'])
+        && get(/databases/$(database)/documents/accountTransfers/$(request.resource.data.code)).data.toUid == request.auth.uid
+        && get(/databases/$(database)/documents/accountTransfers/$(request.resource.data.code)).data.fromUid == request.resource.data.fromUid;
+    }
+
+    // ---- Viewer access -------------------------------------------------
+
+    // Dorm settings. Only the owner can read or change them.
+    match /dorms/{code} {
+      allow read: if isDormOwner(code);
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['ownerUid', 'dormName', 'enabled', 'updatedAt']);
+      allow update: if isDormOwner(code)
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.keys().hasOnly(['ownerUid', 'dormName', 'enabled', 'updatedAt']);
+      allow delete: if isDormOwner(code);
+
+      // Name-free vacancy list. The owner writes it; joined viewers read it
+      // while access is switched on.
+      match /vacancy/{roomId} {
+        allow read: if isDormOwner(code)
+          || (isDormViewer(code) && get(dormPath(code)).data.enabled == true);
+        allow write: if isDormOwner(code);
+      }
+
+      // Public-facing, sanitized hallway geometry and room positions.
+      match /layout/{layoutId} {
+        allow read: if isDormOwner(code)
+          || (isDormViewer(code) && get(dormPath(code)).data.enabled == true);
+        allow write: if isDormOwner(code);
+      }
+
+      // People who joined. A viewer may create ONLY their own record, and only
+      // with the right password fingerprint, while access is on and they are
+      // not blocked.
+      match /viewers/{viewerId} {
+        allow get: if signedIn() && (request.auth.uid == viewerId || isDormOwner(code));
+        allow list: if isDormOwner(code);
+        allow create: if signedIn()
+          && request.auth.uid == viewerId
+          && get(dormPath(code)).data.enabled == true
+          && !exists(/databases/$(database)/documents/dorms/$(code)/blocked/$(request.auth.uid))
+          && request.resource.data.proof == get(/databases/$(database)/documents/dormSecrets/$(code)).data.passwordHash
+          && request.resource.data.keys().hasOnly(['proof', 'name', 'email', 'joinedAt'])
+          && request.resource.data.joinedAt == request.time;
+        allow delete: if isDormOwner(code) || (signedIn() && request.auth.uid == viewerId);
+      }
+
+      // Viewers the admin removed.
+      match /blocked/{blockedId} {
+        allow read, write: if isDormOwner(code);
+      }
+    }
+
+    // Password fingerprint. Never readable by viewers; only the owner.
+    match /dormSecrets/{code} {
+      allow read, write: if isDormOwner(code);
+    }
+
+    // =====================================================================
+    // Super Admin platform (collections in this same database):
+    // superAdmins, pairing, branches, directory, audit.
+    // Anyone can register as a Super Admin, but each Super Admin only ever
+    // sees the dormitories they connected themselves (requestedBy == their uid),
+    // and a branch shares nothing until its own Branch Admin approves.
+    // =====================================================================
+    function isSuper() {
+      return signedIn() && exists(/databases/$(database)/documents/superAdmins/$(request.auth.uid));
+    }
+    function branchDoc(uid) {
+      return get(/databases/$(database)/documents/branches/$(uid)).data;
+    }
+    function mine(uid) {
+      return isSuper() && branchDoc(uid).requestedBy == request.auth.uid;
+    }
+    // A branch owner may only decide a pending request, or revoke an approved one.
+    function okMove(before, after) {
+      return before == after
+        || (before == 'pending' && after in ['approved', 'rejected'])
+        || (before == 'approved' && after == 'revoked');
+    }
+
+    // Self-service registration: a user can create only their own Super Admin profile.
+    match /superAdmins/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['email', 'createdAt']);
+    }
+
+    // One-time, short-lived pairing codes created by a Branch Admin.
+    match /pairing/{code} {
+      allow get: if isSuper();
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['ownerUid', 'dormName', 'location', 'expiresAt'])
+        && request.resource.data.expiresAt > request.time
+        && request.resource.data.expiresAt <= request.time + duration.value(20, 'm');
+      allow delete: if isSuper() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+    }
+
+    // One connection record per branch (document id = the Branch Admin's uid).
+    match /branches/{uid} {
+      allow get: if (signedIn() && request.auth.uid == uid)
+        || (isSuper() && resource.data.requestedBy == request.auth.uid);
+      allow list: if isSuper() && resource.data.requestedBy == request.auth.uid;
+      allow create: if isSuper()
+        && request.resource.data.requestedBy == request.auth.uid
+        && request.resource.data.ownerUid == uid
+        && request.resource.data.dirStatus == 'pending'
+        && request.resource.data.analyticsStatus == 'pending'
+        && request.resource.data.keys().hasOnly(['ownerUid', 'dormName', 'location', 'purpose', 'pairingCode', 'requestedBy', 'dirStatus', 'analyticsStatus', 'createdAt'])
+        && get(/databases/$(database)/documents/pairing/$(request.resource.data.pairingCode)).data.ownerUid == uid
+        && get(/databases/$(database)/documents/pairing/$(request.resource.data.pairingCode)).data.expiresAt > request.time;
+      // Only the Branch Admin can change the two permissions. A Super Admin cannot.
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['dirStatus', 'analyticsStatus', 'decidedAt'])
+        && okMove(resource.data.dirStatus, request.resource.data.dirStatus)
+        && okMove(resource.data.analyticsStatus, request.resource.data.analyticsStatus);
+      allow delete: if (signedIn() && request.auth.uid == uid)
+        || (isSuper() && resource.data.requestedBy == request.auth.uid);
+
+      // Analytics permission: historical vacancy snapshots.
+      match /snapshots/{id} {
+        allow read: if mine(uid) && branchDoc(uid).analyticsStatus == 'approved';
+        allow create: if signedIn() && request.auth.uid == uid && branchDoc(uid).analyticsStatus == 'approved';
+      }
+
+      // Consent: a Branch Admin asks before changing or removing the dorm server.
+      // Only the connected Super Admin can approve or reject. A request is single-use.
+      match /changes/{id} {
+        allow read: if (signedIn() && request.auth.uid == uid) || mine(uid);
+        allow create: if signedIn() && request.auth.uid == uid
+          && request.resource.data.status == 'pending'
+          && request.resource.data.kind in ['password', 'remove']
+          && request.resource.data.keys().hasOnly(['kind', 'status', 'dormName', 'createdAt']);
+        allow update: if mine(uid)
+          && resource.data.status == 'pending'
+          && request.resource.data.status in ['approved', 'rejected']
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'decidedAt']);
+        allow delete: if signedIn() && request.auth.uid == uid;
+      }
+    }
+
+    // Public directory record (name, location, counts only), written by the Branch Admin
+    // while Directory is approved. Any signed-in account (Marketing Viewers) can read it.
+    match /directory/{uid} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.ownerUid == uid
+        && branchDoc(uid).dirStatus == 'approved'
+        && request.resource.data.keys().hasOnly(['ownerUid', 'dormName', 'location', 'total', 'vacant', 'occupied', 'maleVacant', 'femaleVacant', 'studentVacant', 'revieweeVacant', 'mixedVacant', 'mixedGroupVacant', 'acVacant', 'nonAcVacant', 'updatedAt']);
+      allow delete: if (signedIn() && request.auth.uid == uid) || mine(uid);
+    }
+
+    // Append-only audit trail. Each entry names the Super Admin it belongs to.
+    match /audit/{id} {
+      allow read: if signedIn()
+        && (resource.data.targetAdmin == request.auth.uid || resource.data.actorUid == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.actorUid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['actorUid', 'actorEmail', 'action', 'branch', 'detail', 'at', 'targetAdmin']);
+    }
+
+    // =====================================================================
+    // Super Admin SERVER access for viewers (marketing viewers).
+    // Same model as dorm viewers: server code + password fingerprint.
+    // =====================================================================
+    function isCentralOwner(code) {
+      return signedIn() && get(/databases/$(database)/documents/centralAccess/$(code)).data.ownerUid == request.auth.uid;
+    }
+    match /centralAccess/{code} {
+      allow get: if signedIn();
+      allow list: if isSuper() && resource.data.ownerUid == request.auth.uid;
+      allow create: if isSuper()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['ownerUid', 'name', 'enabled', 'updatedAt'])
+        // one server per Super Admin: no pointer yet, and this write must create it
+        && !exists(/databases/$(database)/documents/centralOwner/$(request.auth.uid))
+        && getAfter(/databases/$(database)/documents/centralOwner/$(request.auth.uid)).data.code == code;
+      allow update: if isCentralOwner(code)
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.keys().hasOnly(['ownerUid', 'name', 'enabled', 'updatedAt']);
+      allow delete: if isCentralOwner(code);
+
+      match /viewers/{viewerId} {
+        allow get: if signedIn() && (request.auth.uid == viewerId || isCentralOwner(code));
+        allow list: if isCentralOwner(code);
+        allow create: if signedIn()
+          && request.auth.uid == viewerId
+          && get(/databases/$(database)/documents/centralAccess/$(code)).data.enabled == true
+          && !exists(/databases/$(database)/documents/centralAccess/$(code)/blocked/$(request.auth.uid))
+          && request.resource.data.proof == get(/databases/$(database)/documents/centralSecrets/$(code)).data.passwordHash
+          && request.resource.data.keys().hasOnly(['proof', 'name', 'email', 'joinedAt'])
+          && request.resource.data.joinedAt == request.time;
+        allow delete: if isCentralOwner(code) || (signedIn() && request.auth.uid == viewerId);
+      }
+      match /blocked/{blockedId} {
+        allow read, write: if isCentralOwner(code);
+      }
+    }
+    // Pointer that makes "one server per Super Admin" enforceable.
+    match /centralOwner/{uid} {
+      allow read, delete: if signedIn() && request.auth.uid == uid;
+      allow create: if isSuper() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['code']);
+    }
+    match /centralSecrets/{code} {
+      allow create: if isSuper() && request.resource.data.ownerUid == request.auth.uid;
+      // Owner is read from the secret itself, so a half-finished setup can be retried.
+      allow read, delete: if signedIn() && resource.data.ownerUid == request.auth.uid;
+      allow update: if signedIn() && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == request.auth.uid;
+    }
+  }
+}
