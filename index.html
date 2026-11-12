@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vacancy Tracker</title>
+<meta name="description" content="Manage dorm room occupancy, tenant checkouts, reservations, and live vacancy updates with the Vacancy Tracker.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="menu.css">
+<link rel="stylesheet" href="datepick.css">
+<link rel="stylesheet" href="checkout-carousel.css">
+<link rel="stylesheet" href="auth-ui.css">
+</head>
+<body>
+
+<!-- ======================= ROLE SELECTION PORTAL ======================= -->
+<div id="roleScreen" hidden>
+  <div class="portal-shell">
+    <header class="portal-top">
+      <div class="auth-brand-lockup">
+        <span class="portal-logo"><i class="fa-solid fa-building-user"></i></span>
+        <div><span class="brand-eyebrow">TERRINSPROJECT</span><span class="brand-caption">Dormitory Management System</span></div>
+      </div>
+      <button class="portal-theme-toggle" id="portalThemeToggle" type="button" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+    </header>
+
+    <main class="portal-main">
+      <button class="portal-back" id="portalBack" type="button" hidden><i class="fa-solid fa-arrow-left"></i> Back</button>
+      <ol class="portal-crumbs" id="portalCrumbs" aria-label="Your selection"></ol>
+
+      <section class="portal-step" data-step="role" aria-labelledby="ps-role-h">
+        <h1 id="ps-role-h" tabindex="-1">Welcome!</h1>
+        <p class="portal-lead">Please select your account type to continue.</p>
+        <div class="portal-grid">
+          <button class="portal-card" type="button" data-go="admin">
+            <span class="pc-icon"><i class="fa-solid fa-user-shield"></i></span>
+            <strong>Admin</strong>
+            <small>Manage dormitories and system operations</small>
+            <i class="pc-arrow fa-solid fa-arrow-right"></i>
+          </button>
+          <button class="portal-card" type="button" data-go="viewer">
+            <span class="pc-icon"><i class="fa-regular fa-eye"></i></span>
+            <strong>Viewer</strong>
+            <small>View dormitories and room availability</small>
+            <i class="pc-arrow fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <section class="portal-step" data-step="admin" aria-labelledby="ps-admin-h" hidden>
+        <h1 id="ps-admin-h" tabindex="-1">Select admin type</h1>
+        <p class="portal-lead">Choose the level of access you were assigned.</p>
+        <div class="portal-grid">
+          <button class="portal-card" type="button" data-action="super-admin">
+            <span class="pc-icon"><i class="fa-solid fa-crown"></i></span>
+            <strong>Super Admin</strong>
+            <small>Full system control. Manages all dormitories, branches, accounts, credentials and system settings.</small>
+            <i class="pc-arrow fa-solid fa-arrow-right"></i>
+          </button>
+          <button class="portal-card" type="button" data-action="branch-admin">
+            <span class="pc-icon"><i class="fa-solid fa-building"></i></span>
+            <strong>Branch Admin</strong>
+            <small>Manages only their assigned dormitory, including rooms, tenants, occupancy and vacancy records.</small>
+            <i class="pc-arrow fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <section class="portal-step" data-step="viewer" aria-labelledby="ps-viewer-h" hidden>
+        <h1 id="ps-viewer-h" tabindex="-1">Select viewer type</h1>
+        <p class="portal-lead">Viewers can look, but cannot change anything.</p>
+        <div class="portal-grid">
+          <button class="portal-card" type="button" data-action="marketing-viewer">
+            <span class="pc-icon"><i class="fa-solid fa-bullhorn"></i></span>
+            <strong>Marketing Viewer</strong>
+            <small>View the directory of all registered dormitories, their locations and available-bed summaries.</small>
+            <i class="pc-arrow fa-solid fa-arrow-right"></i>
+          </button>
+          <button class="portal-card" type="button" data-action="dormitory-viewer">
+            <span class="pc-icon"><i class="fa-solid fa-bed"></i></span>
+            <strong>Dormitory Viewer</strong>
+            <small>Open the room availability tracker of one dormitory using its access code and password.</small>
+            <i class="pc-arrow fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <section class="portal-step" data-step="soon" aria-labelledby="ps-soon-h" hidden>
+        <span class="portal-soon-icon"><i class="fa-solid fa-hourglass-half"></i></span>
+        <h1 id="ps-soon-h" tabindex="-1">Not available yet</h1>
+        <p class="portal-lead" id="portalSoonText"></p>
+        <button class="portal-primary" type="button" id="portalSoonBranch" hidden>Go to Branch Admin sign in <i class="fa-solid fa-arrow-right"></i></button>
+        <button class="portal-primary" type="button" id="portalSoonViewer" hidden>Open Dormitory Viewer <i class="fa-solid fa-arrow-right"></i></button>
+      </section>
+    </main>
+
+    <footer class="portal-foot"><i class="fa-solid fa-shield-halved"></i> Choose your role to sign in.</footer>
+  </div>
+</div>
+
+<!-- ======================= LOGIN SCREEN ======================= -->
+<div id="loginScreen" style="display:none;">
+  <div class="auth-shell">
+    <section class="auth-hero" aria-label="Dorm vacancy tracker">
+      <img class="auth-hero-image" src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1800&q=85" alt="Bright modern dormitory room">
+      <div class="auth-hero-shade"></div>
+      <div class="auth-hero-top">
+        <div class="auth-brand-lockup">
+          <button class="theme-toggle hero-theme-toggle" id="heroThemeToggle" type="button" aria-label="Toggle theme"><i id="heroThemeIcon" class="fa-solid fa-moon"></i></button>
+          <div><span class="brand-eyebrow">TERRINSPROJECT</span><span class="brand-caption">Dorm Vacancy Tracker</span></div>
+        </div>
+        <span class="live-indicator"><i></i> Live System</span>
+      </div>
+      <div class="auth-hero-copy">
+        <span class="hero-kicker"><i class="fa-solid fa-building-user"></i> Automated dormitory management</span>
+        <h1>DORM VACANCY TRACKER</h1>
+        <p>Track occupancy, checkouts, and reservations in one clear view. Keep your team in sync with live updates.</p>
+      </div>
+      <div class="auth-hero-foot">
+        <span class="shield-icon"><i class="fa-solid fa-shield-halved"></i></span>
+        <span><strong>Secure Access Control</strong><small>Instant updates and real-time synchronization</small></span>
+        <span class="version-label">TERRINSPROJECT</span>
+      </div>
+    </section>
+
+    <section class="auth-panel" aria-label="Account sign in">
+      <div class="mobile-brand">
+        <div class="auth-brand-lockup">
+          <button class="theme-toggle mobile-theme-toggle" id="mobileThemeToggle" type="button" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+          <div><span class="brand-eyebrow">TERRINSPROJECT</span><span class="brand-caption">Dorm Vacancy Tracker</span></div>
+        </div>
+      </div>
+      <div class="auth-form-wrap">
+        <button class="back-to-roles" id="backToRolesBtn" type="button"><i class="fa-solid fa-arrow-left"></i> Change role</button>
+        <div id="authMount"></div>
+        <p class="auth-footnote">Only checking vacancies? <a class="viewer-link" href="viewer.html">Open the viewer page</a></p>
+      </div>
+      <footer class="auth-copyright">TERRINSPROJECT <span>© 2026</span> · Dorm Vacancy Tracker</footer>
+    </section>
+  </div>
+</div>
+
+<!-- ======================= APP SHELL ======================= -->
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-btn mx-logo" type="button" data-menu-toggle aria-label="Menu" title="Menu"><span></span><span></span><span></span></button>
+      <h1 class="topbar-title" id="topbarTitle">Room Canvas</h1>
+    </div>
+    <div class="topbar-right">
+      <div class="clock"><div class="time" id="clockTime">--:--:--</div><div class="date" id="clockDate">—</div></div>
+      <div class="user-chip"><img id="userPhoto" alt=""><span class="name" id="userName"></span></div>
+      <button class="theme-toggle app-theme-toggle" id="appThemeToggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"><i id="appThemeIcon" class="fa-solid fa-moon"></i></button>
+      <button class="signout" id="signOutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="dashboard" class="active">Room Canvas</button>
+    <button data-tab="reminders" class="reminders-tab">Checkout Reminders <span id="overdueTabBadge" class="overdue-tab-badge" hidden></span></button>
+    <button data-tab="hallway">Hallway Layout</button>
+    <button data-tab="analytics">Analytics</button>
+    <button data-tab="matrix">Bed Matrix</button>
+    <button data-tab="calendar">Checkout Schedule</button>
+    <button data-tab="reserve">Reserved Clients</button>
+    <button data-tab="temporary">Temporary Dorm Clients</button>
+    <button data-tab="history">Tenant History</button>
+    <button data-tab="viewers">Viewer Access</button>
+    <button data-tab="central">Central Link</button>
+    <button data-tab="transfer">Data Transfer</button>
+  </nav>
+
+  <main>
+
+    <div class="shared-overview">
+      <div class="stat-strip" id="statStrip"></div>
+      <div class="toolbar shared-toolbar">
+        <div class="filters">
+          <select id="filterGender" aria-label="Filter by gender">
+            <option value="all">All genders</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Mixed">Mixed</option>
+          </select>
+          <select id="filterVacancy" aria-label="Filter by vacancy status">
+            <option value="all">All statuses</option>
+            <option value="vacant">Vacant</option>
+            <option value="occupied">Occupied</option>
+            <option value="overdue">Overdue</option>
+            <option value="reserved">Reserved</option>
+            <option value="temporary">Temporary</option>
+            <option value="full">Full rooms</option>
+          </select>
+          <select id="filterDemographic" aria-label="Filter by resident group">
+            <option value="all">All resident groups</option>
+            <option value="Students">Students</option>
+            <option value="Reviewees">Reviewees</option>
+            <option value="Mixed">Mixed</option>
+          </select>
+          <input type="text" id="filterSearch" aria-label="Search rooms, beds, or tenants" placeholder="Search room, bed, or tenant...">
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------------- DASHBOARD ---------------- -->
+    <section class="view active" id="view-dashboard">
+      <h2 class="view-title">Room Canvas</h2>
+      <p class="view-sub">Live vacancy by room, tenant and checkout schedule.</p>
+      <div class="toolbar">
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-outline" id="importSeedBtn">Import my existing rooms</button>
+          <button class="btn btn-primary" id="addRoomBtn">+ Add room</button>
+        </div>
+      </div>
+      <div class="legend operational-legend">
+        <span><i class="vacant"></i>Vacant</span><span><i class="occupied"></i>Occupied</span>
+        <span><i class="reserved"></i>Reserved</span><span><i class="temporary"></i>Temporary occupied</span>
+        <span><i class="overdue"></i>Overdue</span><span><i class="soon"></i>Checkout ≤48h</span>
+      </div>
+      <div class="room-grid" id="roomGrid"></div>
+    </section>
+
+    <!-- ---------------- CHECKOUT REMINDERS ---------------- -->
+    <section class="view" id="view-reminders">
+      <h2 class="view-title">Checkout Reminders</h2>
+      <p class="view-sub">Tenants past their check-out date.</p>
+      <div class="overdue-panel" id="overduePanel" hidden></div>
+    </section>
+
+    <!-- ---------------- HALLWAY ---------------- -->
+    <section class="view" id="view-hallway">
+      <h2 class="view-title">Hallway Layout</h2>
+      <p class="view-sub">Layout starts locked to prevent accidental changes. Unlock to reposition rooms and shapes.</p>
+      <div class="toolbar">
+        <div class="hallway-actions">
+          <button class="btn btn-outline" id="layoutLockBtn" type="button" aria-pressed="true"><i class="fa-solid fa-lock"></i> Layout locked</button>
+          <button class="btn btn-outline" id="addShapeBtn" type="button">+ Add Facility / Shape</button>
+          <button class="btn btn-outline" id="editShapeBtn" type="button" hidden>Edit selected shape</button>
+          <button class="btn btn-primary" id="addRoomBtn2" type="button">+ Add room</button>
+        </div>
+      </div>
+      <div class="hallway-wrap">
+        <div class="hallway-canvas" id="hallwayCanvas"></div>
+      </div>
+    </section>
+
+    <!-- ---------------- ANALYTICS ---------------- -->
+    <section class="view" id="view-analytics">
+      <h2 class="view-title">Analytics</h2>
+      <p class="view-sub">Occupancy, upcoming turnover and vacancy hotspots.</p>
+      <div id="analyticsContent"></div>
+    </section>
+
+    <!-- ---------------- MATRIX ---------------- -->
+    <section class="view" id="view-matrix">
+      <h2 class="view-title">Occupancy Matrix</h2>
+      <p class="view-sub">Every room and bed at a glance. Hover a cell for details.</p>
+      <div class="matrix-scroll">
+        <div class="legend">
+          <span><i class="vacant"></i>Vacant</span>
+          <span><i class="occupied"></i>Occupied</span>
+          <span><i class="reserved"></i>Reserved</span>
+          <span><i class="temporary"></i>Temporary occupied</span>
+          <span><i class="overdue"></i>Overdue</span>
+          <span><i class="soon"></i>Checkout ≤48h</span>
+        </div>
+        <table class="matrix" id="matrixTable"></table>
+      </div>
+    </section>
+
+    <!-- ---------------- CHECKOUT CALENDAR ---------------- -->
+    <section class="view" id="view-calendar">
+      <h2 class="view-title">Checkout Schedule</h2>
+      <p class="view-sub">Upcoming check-outs by month.</p>
+      <div class="checkout-list" id="checkoutList"></div>
+    </section>
+
+    <!-- ---------------- RESERVE CLIENTS ---------------- -->
+    <section class="view" id="view-reserve">
+      <h2 class="view-title">Reserve Clients</h2>
+      <p class="view-sub">Reserve a bed for a single client or a group.</p>
+      <div class="wz-bar"><button class="btn btn-primary" id="openReserveWizard" type="button">+ Add reserve client</button></div>
+      <div class="reserve-grid">
+        <div class="prospect-form">
+          <div class="field"><label>Reservation type</label><div class="seg" id="pMode" role="group" aria-label="Reservation type"><button type="button" data-mode="single" class="on">Single</button><button type="button" data-mode="group">Group</button></div></div>
+          <div class="field" id="pGroupWrap" hidden><label for="pGroupSize">How many members?</label><input type="number" id="pGroupSize" min="2" max="12" value="2"><div id="pGroupNames" class="group-names"></div></div>
+          <div class="field" id="pNameField"><label for="pName">Client name</label><input type="text" id="pName" placeholder="Full name"></div>
+          <div class="field"><label for="pGender">Gender</label>
+            <select id="pGender"><option>Male</option><option>Female</option><option value="Any">Any</option></select>
+          </div>
+          <div class="field"><label for="pDemographic">Resident group</label><select id="pDemographic"><option value="Student">Student</option><option value="Reviewee">Reviewee</option></select></div>
+          <div class="field-row">
+            <div class="field"><label for="pCheckIn">Target check-in</label><input type="datetime-local" id="pCheckIn"></div>
+            <div class="field"><label for="pCheckOut">Target check-out (optional)</label><input type="datetime-local" id="pCheckOut"></div>
+          </div>
+          <div hidden><select id="pDesiredBed"></select></div>
+          <div class="field"><label for="pNotes">Notes</label><textarea id="pNotes" rows="2" placeholder="Optional"></textarea></div>
+          <div class="reserve-scan" id="prospectScanResults" aria-live="polite"></div>
+          <button class="btn btn-outline" id="scanProspectsBtn" type="button">Scan for vacancies</button>
+          <button class="btn btn-primary" id="addProspectBtn">Add reserve client</button>
+        </div>
+        <div class="prospect-list" id="prospectList"></div>
+      </div>
+    </section>
+
+    <!-- ---------------- TEMPORARY CLIENTS ---------------- -->
+    <section class="view" id="view-temporary">
+      <h2 class="view-title">Temporary Dorm Clients</h2>
+      <p class="view-sub">Place short-term guests, then plan their move to a permanent room.</p>
+      <div class="wz-bar"><button class="btn btn-primary" id="openTempWizard" type="button">+ Add temporary client</button></div>
+      <div class="va-subtabs" role="tablist"><button type="button" class="va-subtab active" data-tsub="clients">Clients</button><button type="button" class="va-subtab" data-tsub="rem" id="tempRemTab">Reminders <span id="tempRemCount" class="cnt-pill" hidden></span></button></div>
+      <div id="tempRemBox" hidden></div>
+      <div class="reserve-grid">
+        <div class="prospect-form">
+          <div class="field"><label>Client type</label><div class="seg" id="tMode" role="group" aria-label="Client type"><button type="button" data-mode="single" class="on">Single</button><button type="button" data-mode="group">Group</button></div></div>
+          <div class="field" id="tGroupWrap" hidden><label for="tGroupSize">How many members?</label><input type="number" id="tGroupSize" min="2" max="12" value="2"><div id="tGroupNames" class="group-names"></div></div>
+          <div class="field" id="tNameField"><label for="tName">Client name</label><input type="text" id="tName" placeholder="Full name"></div>
+          <div class="field"><label for="tGender">Gender</label><select id="tGender"><option>Male</option><option>Female</option><option>Mixed</option></select></div>
+          <div class="field"><label for="tStart">Check-in</label><input type="datetime-local" id="tStart"></div>
+          <input type="hidden" id="tEnd"><div hidden><select id="tTargetBed"></select></div>
+          <div class="field"><label for="tNotes">Notes</label><textarea id="tNotes" rows="2" placeholder="Optional"></textarea></div>
+          <button class="btn btn-outline" id="tScanBtn" type="button">Scan for temporary rooms</button>
+          <div class="reserve-scan" id="tScan" aria-live="polite"></div>
+          <div id="tStep2" hidden>
+            <div class="field"><label for="tDemo">Resident group after transfer</label><select id="tDemo"><option value="Student">Student</option><option value="Reviewee">Reviewee</option></select></div>
+            <button class="btn btn-outline" id="tTransferBtn" type="button">Scan permanent rooms to move to</button>
+            <div class="reserve-scan" id="tTransferScan" aria-live="polite"></div>
+          </div>
+          <div id="tStep3" hidden>
+            <div class="field"><label>Temporary check-out (when the permanent bed is free)</label><div id="tFreeDate" class="det"></div></div>
+            <div class="field"><label for="tAfterOut">Check-out date after the transfer</label><input type="datetime-local" id="tAfterOut"></div>
+          </div>
+          <button class="btn btn-primary" id="addTemporaryBtn" type="button" hidden>Add temporary client</button>
+        </div>
+        <div class="prospect-list" id="temporaryList"></div>
+      </div>
+    </section>
+
+    <!-- ---------------- TENANT HISTORY ---------------- -->
+    <section class="view" id="view-history">
+      <h2 class="view-title">Tenant History</h2>
+      <p class="view-sub">Past tenants. Records are deleted after 30 days.</p>
+      <div id="historyList"></div>
+    </section>
+
+    <!-- ---------------- VIEWER ACCESS ---------------- -->
+    <section class="view" id="view-viewers">
+      <h2 class="view-title">Viewer Access</h2>
+      <p class="view-sub">Let people check which rooms are vacant or full without seeing any resident names. You control who gets in.</p>
+      <div id="viewerAccessPanel"></div>
+    </section>
+
+    <!-- ---------------- CENTRAL LINK ---------------- -->
+    <section class="view" id="view-transfer">
+      <h2 class="view-title">Data Transfer</h2>
+      <p class="view-sub">Hand your whole dormitory over to a new account.</p>
+      <div id="transferPanel"></div>
+    </section>
+
+    <section class="view" id="view-central">
+      <h2 class="view-title">Central Link</h2>
+      <p class="view-sub">Connect this dormitory to a Super Admin's central platform. You decide what is shared.</p>
+      <div id="centralLinkPanel"></div>
+    </section>
+
+  </main>
+
+  <aside class="assistant-widget" aria-label="Dorm assistant">
+    <section class="assistant-panel" id="assistantPanel" aria-labelledby="assistantTitle" hidden>
+      <header class="assistant-header">
+        <div class="assistant-avatar" aria-hidden="true"><i class="fa-solid fa-sparkles"></i></div>
+        <div class="assistant-heading">
+          <h2 id="assistantTitle">Dorm Assistant</h2>
+          <span>Tracker help</span>
+        </div>
+        <button class="assistant-close" id="assistantCloseBtn" type="button" aria-label="Close assistant">&times;</button>
+      </header>
+      <div class="assistant-messages" id="assistantMessages" aria-live="polite" aria-relevant="additions">
+        <div class="assistant-message">
+          <span class="assistant-message-avatar" aria-hidden="true"><i class="fa-solid fa-sparkles"></i></span>
+          <p>How can I assist you?</p>
+        </div>
+        <p class="assistant-notice" id="assistantStatus">Deploy the Python tracker assistant to enable chat.</p>
+      </div>
+      <p class="assistant-provider-note">Built with tracker-specific Python rules. No AI model API key is needed. Changes require your confirmation.</p>
+      <form class="assistant-compose" id="assistantForm">
+        <input type="text" id="assistantInput" aria-label="Message" placeholder="Ask about your vacancy tracker…" autocomplete="off" required>
+        <button type="submit" id="assistantSendBtn" aria-label="Send message"><i class="fa-solid fa-arrow-up"></i></button>
+      </form>
+    </section>
+    <p class="assistant-greeting" id="assistantGreeting">How can I assist you?</p>
+    <button class="assistant-launcher" id="assistantLauncher" type="button" aria-label="Open dorm assistant" aria-expanded="false" aria-controls="assistantPanel">
+      <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+    </button>
+  </aside>
+</div>
+
+<!-- ---------------- ROOM MODAL ---------------- -->
+<div class="modal-backdrop" id="roomModalBackdrop">
+  <div class="modal">
+    <div class="modal-head"><h3 id="roomModalTitle">Add room</h3><button class="icon-btn" id="closeRoomModal">✕</button></div>
+    <div class="modal-body">
+      <div class="field-row">
+                <div class="field"><label for="rmRoomNumber">Room number / name</label><input type="text" id="rmRoomNumber" placeholder="e.g. 220"><p class="field-error" id="rmRoomError" role="alert" hidden></p></div>
+        <div class="field"><label for="rmType">Type</label>
+          <select id="rmType"><option>Room</option><option>Bedspacer</option></select>
+        </div>
+      </div>
+      <div class="field">      <label for="rmGender">Gender assignment</label>
+      <select id="rmGender"><option>Mixed</option><option>Male</option><option>Female</option></select>
+      </div>
+      <div class="field"><label for="rmAc">Air conditioning</label>
+      <select id="rmAc"><option value="false">Non-AC</option><option value="true">AC</option></select>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="rmDemographic">Resident group zoning</label>
+          <select id="rmDemographic"><option value="Mixed">Mixed</option><option value="Students">Students</option><option value="Reviewees">Reviewees</option></select>
+        </div>
+        <div class="field"><label for="rmTenancyMode">Tenancy mode</label>
+          <select id="rmTenancyMode"><option value="Bedspace">Bedspace</option><option value="Whole Room">Whole Room</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Capacity (number of beds)</label>
+        <div class="chip-select" id="capacityChips"></div>
+        <input type="hidden" id="rmCapacity">
+      </div>
+      <div class="field">
+        <label>Beds</label>
+        <div class="beds-editor" id="bedsEditor"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancelRoomModal">Cancel</button>
+      <button class="btn btn-primary" id="saveRoomBtn">Save room</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------------- DELETE ROOM CONFIRMATION ---------------- -->
+<div class="modal-backdrop confirm-backdrop" id="deleteRoomBackdrop">
+  <div class="modal confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="deleteRoomTitle">
+    <div class="modal-body">
+      <span class="confirm-icon" aria-hidden="true"><i class="fa-solid fa-trash-can"></i></span>
+      <h3 id="deleteRoomTitle">Are you sure you want to delete <span id="deleteRoomName"></span>?</h3>
+      <p class="view-sub" id="deleteRoomNote">This will permanently remove the room and its bed records. This cannot be undone.</p>
+      <p class="field-error" id="deleteRoomError" role="alert" hidden></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancelDeleteRoom" type="button">Cancel</button>
+      <button class="btn btn-danger-solid" id="confirmDeleteRoom" type="button">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="transferModalBackdrop">
+  <div class="modal">
+    <div class="modal-head"><h3>Transfer resident</h3><button class="icon-btn" id="closeTransferModal" type="button" aria-label="Close">✕</button></div>
+    <div class="modal-body">
+      <p class="view-sub" id="transferSourceSummary"></p>
+      <div class="field"><label for="transferTarget">Compatible vacant bed</label><select id="transferTarget"></select></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancelTransferModal" type="button">Cancel</button>
+      <button class="btn btn-primary" id="confirmTransferBtn" type="button">Transfer resident</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------------- EXTEND STAY MODAL ---------------- -->
+<div class="modal-backdrop" id="extendModalBackdrop">
+  <div class="modal">
+    <div class="modal-head"><h3>Extend stay</h3><button class="icon-btn" id="closeExtendModal" type="button" aria-label="Close">✕</button></div>
+    <div class="modal-body">
+      <p class="view-sub" id="extendSummary"></p>
+      <div class="field"><label for="extendNewEnd">New checkout date and time</label><input type="datetime-local" id="extendNewEnd"></div>
+      <div class="notice-box" id="extendReservationBox" hidden>
+        <p id="extendReservationText"></p>
+        <label class="check-row"><input type="checkbox" id="extendCancelReservation"> Cancel that reservation so this tenant can stay</label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancelExtendModal" type="button">Close</button>
+      <button class="btn btn-primary" id="saveExtendBtn" type="button">Save new checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------------- FACILITY / SHAPE MODAL ---------------- -->
+<div class="modal-backdrop" id="shapeModalBackdrop">
+  <div class="modal">
+    <div class="modal-head"><h3 id="shapeModalTitle">Add Facility / Shape</h3><button class="icon-btn" id="closeShapeModal" type="button" aria-label="Close">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label for="shapeLabel">Label</label><input type="text" id="shapeLabel" maxlength="80" placeholder="e.g. CR Male, Admin Office, Lobby"></div>
+    <div class="field"><label for="shapeLabelRotation">Label position</label>
+      <select id="shapeLabelRotation">
+        <option value="0">0°</option>
+        <option value="90">90°</option>
+        <option value="180">180°</option>
+        <option value="270">270°</option>
+      </select>
+    </div>
+      <div class="field-row">
+        <div class="field"><label for="shapeKind">Type</label>
+          <select id="shapeKind"><option value="facility">Facility / room</option><option value="walkway">Corridor / walkway</option></select>
+        </div>
+        <div class="field"><label for="shapeGeometry">Geometry</label>
+          <select id="shapeGeometry"><option value="rectangle">Rectangle / square</option><option value="circle">Circle</option><option value="triangle">Triangle</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="shapeColor">Background color</label><input type="color" id="shapeColor" value="#dce8e4">
+      </div>
+      <p class="view-sub shape-editor-hint">Resize directly on the hallway canvas using the handles.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger" id="deleteShapeBtn" type="button" hidden>Delete shape</button>
+      <span class="spacer"></span>
+      <button class="btn btn-outline" id="cancelShapeModal" type="button">Cancel</button>
+      <button class="btn btn-primary" id="saveShapeBtn" type="button">Save shape</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase (Google Sign-In + Firestore database) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="sqlstore.js"></script>
+<script src="auth-ui.js"></script>
+<script src="seed-data.js"></script>
+<script src="assistant.js"></script>
+<script src="js/proof.js"></script>
+<script src="js/01-state.js"></script>
+<script src="js/02-auth-boot.js"></script>
+<script src="js/03-clock-and-sync.js"></script>
+<script src="js/04-helpers.js"></script>
+<script src="js/06-rooms.js"></script>
+<script src="js/07-transfers.js"></script>
+<script src="js/08-temporary-clients.js"></script>
+<script src="js/09-hallway.js"></script>
+<script src="js/11-reservations.js"></script>
+<script src="js/12-overdue-history.js"></script>
+<script src="js/13-viewer-access.js"></script>
+<script src="js/14-canvas-tabs.js"></script>
+<script src="js/15-central-link.js"></script>
+<script src="js/16-reserve-group.js"></script>
+<script src="js/17-temporary-flow.js"></script>
+<script src="js/18-wizard.js"></script>
+<script src="js/19-data-transfer.js"></script>
+<script src="js/20-room-delete.js"></script>
+<script src="js/21-checkout-carousel.js"></script>
+<script src="js/99-main.js"></script>
+<script src="menu.js"></script>
+<script src="datepick.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+/* auth-ui.css — the one shared sign-in / create account / update account card.
+   Self-contained: works on all four pages and follows their dark-mode switches. */
+.vt-auth{--vt-bg:#fff;--vt-ink:#172033;--vt-soft:#667085;--vt-line:#dfe4ee;--vt-field:#f6f8fc;--vt-acc:var(--acc,#4f46e5);--vt-acc-ink:#fff;--vt-err:#c62828;--vt-ok:#0f8a5f;
+  width:100%;max-width:440px;margin:0 auto;color:var(--vt-ink);font:15px/1.45 inherit;text-align:left}
+body.auth-dark .vt-auth,body.v-dark .vt-auth,:root[data-theme="dark"] .vt-auth{--vt-bg:#111d26;--vt-ink:#eef3f5;--vt-soft:#a5b0b6;--vt-line:#30414b;--vt-field:#192832;--vt-err:#ff8a8a;--vt-ok:#4be0a8}
+.vt-auth *{box-sizing:border-box}
+.vt-tabs{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--vt-field);border:1px solid var(--vt-line);margin-bottom:18px}
+.vt-tab{flex:1;border:0;background:transparent;color:var(--vt-soft);padding:9px 6px;border-radius:9px;font:600 13px/1.2 inherit;cursor:pointer}
+.vt-tab[aria-selected="true"]{background:var(--vt-bg);color:var(--vt-ink);box-shadow:0 1px 4px rgba(0,0,0,.14)}
+.vt-pane[hidden]{display:none}
+.vt-h{margin:0 0 4px;font-size:22px;line-height:1.2;color:var(--vt-ink)}
+.vt-sub{margin:0 0 16px;color:var(--vt-soft);font-size:14px}
+.vt-field{margin:0 0 12px}
+.vt-field label{display:block;margin:0 0 5px;font:600 13px/1.2 inherit;color:var(--vt-ink)}
+.vt-input{display:flex;align-items:center;border:1px solid var(--vt-line);background:var(--vt-field);border-radius:10px;overflow:hidden}
+.vt-input:focus-within{border-color:var(--vt-acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--vt-acc) 22%,transparent)}
+.vt-input input{flex:1;min-width:0;border:0;background:transparent;color:var(--vt-ink);padding:11px 12px;font:15px/1.2 inherit;outline:0}
+.vt-input .vt-suffix{padding:0 12px 0 0;color:var(--vt-soft);font-size:14px;white-space:nowrap}
+.vt-input .vt-eye{border:0;background:transparent;color:var(--vt-soft);padding:0 12px;cursor:pointer;font-size:13px}
+.vt-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:1px solid var(--vt-line);background:var(--vt-bg);color:var(--vt-ink);padding:11px 14px;border-radius:10px;font:600 15px/1.2 inherit;cursor:pointer}
+.vt-btn:hover{border-color:var(--vt-acc)}
+.vt-btn.vt-primary{background:var(--vt-acc);border-color:var(--vt-acc);color:var(--vt-acc-ink)}
+.vt-btn:disabled{opacity:.55;cursor:not-allowed}
+.vt-or{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--vt-soft);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.vt-or::before,.vt-or::after{content:"";flex:1;height:1px;background:var(--vt-line)}
+.vt-msg{min-height:20px;margin:8px 0 0;font-size:13px;color:var(--vt-soft)}
+.vt-msg.vt-bad{color:var(--vt-err);font-weight:600}
+.vt-msg.vt-good{color:var(--vt-ok);font-weight:600}
+.vt-hint{margin:6px 0 0;min-height:18px;font-size:13px;color:var(--vt-soft)}
+.vt-hint.vt-bad{color:var(--vt-err);font-weight:600}
+.vt-hint.vt-good{color:var(--vt-ok);font-weight:600}
+.vt-link{border:0;background:none;color:var(--vt-acc);padding:0;font:600 13px/1.2 inherit;cursor:pointer;text-decoration:underline}
+.vt-who{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border:1px dashed var(--vt-line);border-radius:10px;margin:0 0 14px;color:var(--vt-soft);font-size:13px}
+.vt-who b{color:var(--vt-ink);word-break:break-all}
+.vt-userbox{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px;border:1px solid var(--vt-line);background:var(--vt-field);border-radius:10px;margin:0 0 12px}
+.vt-userbox code{font:600 15px/1.3 ui-monospace,Menlo,Consolas,monospace;word-break:break-all;color:var(--vt-ink)}
+.vt-note{margin:14px 0 0;color:var(--vt-soft);font-size:12.5px}

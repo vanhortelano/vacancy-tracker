@@ -1,0 +1,1181 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "hello",
+        "hi",
+        "hey",
+        "hi there",
+        "hello there",
+        "good morning",
+        "good afternoon",
+        "good evening",
+        "heya",
+        "hiya",
+        "yo",
+        "howdy",
+        "hello assistant",
+        "hi assistant",
+        "anyone there",
+        "hellooo",
+        "hii"
+      ],
+      "responses": [
+        "Hi! I'm the Dorm Assistant. Ask me how anything in the Vacancy Tracker works, like rooms, reservations, checkouts or viewer access.",
+        "Hello! What would you like to know about the tracker?"
+      ]
+    },
+    {
+      "tag": "how_are_you",
+      "patterns": [
+        "how are you",
+        "how are you doing",
+        "how's it going",
+        "how is it going",
+        "how have you been",
+        "are you okay",
+        "you good",
+        "how are u",
+        "how's your day",
+        "what's up"
+      ],
+      "responses": [
+        "Doing great, thanks! How can I help with the tracker today?",
+        "All good here. What do you need help with?"
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "thanks",
+        "thank you",
+        "thank you so much",
+        "thanks a lot",
+        "thx",
+        "ty",
+        "many thanks",
+        "i appreciate it",
+        "that was helpful",
+        "great thanks",
+        "awesome thank you",
+        "perfect thanks",
+        "cheers",
+        "much appreciated"
+      ],
+      "responses": [
+        "You're welcome!",
+        "Happy to help! Ask me anything else about the tracker.",
+        "Anytime!"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "bye",
+        "goodbye",
+        "see you",
+        "see you later",
+        "see ya",
+        "talk to you later",
+        "that's all",
+        "i'm done",
+        "good night",
+        "catch you later",
+        "bye bye",
+        "take care",
+        "gotta go"
+      ],
+      "responses": [
+        "Goodbye! Come back anytime.",
+        "See you later!"
+      ]
+    },
+    {
+      "tag": "identity",
+      "patterns": [
+        "who are you",
+        "what are you",
+        "what is your name",
+        "what's your name",
+        "are you a bot",
+        "are you a robot",
+        "are you human",
+        "are you ai",
+        "are you chatgpt",
+        "who made you",
+        "who built you",
+        "introduce yourself",
+        "tell me about yourself",
+        "are you real"
+      ],
+      "responses": [
+        "I'm the Dorm Assistant, a small chatbot trained on this Vacancy Tracker. I run on your own Firebase project with no outside AI service, so I only know about this website."
+      ]
+    },
+    {
+      "tag": "capabilities",
+      "patterns": [
+        "what can you do",
+        "how can you help me",
+        "help",
+        "help me",
+        "what can i ask you",
+        "what can i ask",
+        "what do you know",
+        "what are your features",
+        "how do you work",
+        "can you assist me",
+        "i need help",
+        "show me what you can do",
+        "what topics do you know",
+        "what questions can you answer",
+        "i need assistance"
+      ],
+      "responses": [
+        "I can explain every part of the tracker: rooms and beds, bed colors, checkouts, extending stays, transfers, reservations, temporary clients, the hallway map, analytics, viewer access, central link and data transfer. I can also tell you your current vacant beds, occupancy and overdue tenants. I can't edit your records, but I'll show you the exact buttons to press."
+      ]
+    },
+    {
+      "tag": "app_overview",
+      "patterns": [
+        "what is this website",
+        "what is this app",
+        "what is the vacancy tracker",
+        "what does this system do",
+        "what is this for",
+        "explain the tracker",
+        "what is this system",
+        "tell me about this app",
+        "what is the dorm vacancy tracker",
+        "what is terrinsproject",
+        "give me an overview",
+        "how does this website work",
+        "what are the tabs",
+        "what are the main features",
+        "what pages are there"
+      ],
+      "responses": [
+        "The Vacancy Tracker manages dormitory beds in real time. Use the three-line menu at the top left to open the tabs: Room Canvas, Checkout Reminders, Hallway Layout, Analytics, Bed Matrix, Checkout Schedule, Reserved Clients, Temporary Dorm Clients, Tenant History, Viewer Access, Central Link and Data Transfer. Everything updates live."
+      ]
+    },
+    {
+      "tag": "roles_portal",
+      "patterns": [
+        "what are the account types",
+        "what is branch admin",
+        "what is the difference between admin and viewer",
+        "which role should i choose",
+        "what is super admin",
+        "what is dormitory viewer",
+        "what is marketing viewer",
+        "what roles are there",
+        "who can use this system",
+        "what is the welcome screen",
+        "select admin type",
+        "which account do i pick",
+        "what does viewer mean",
+        "what can a viewer see",
+        "what is a branch admin"
+      ],
+      "responses": [
+        "There are four roles. Branch Admin manages one dormitory (rooms, tenants, reservations). Super Admin connects many dormitories and sees their approved summaries and trends. Dormitory Viewer sees one dorm's vacancies using its code and password. Marketing Viewer browses the directory of all published dormitories. Viewers are read-only."
+      ]
+    },
+    {
+      "tag": "sign_in",
+      "patterns": [
+        "how do i sign in",
+        "how do i log in",
+        "how to login",
+        "i can't log in",
+        "cannot sign in",
+        "login problem",
+        "sign in with google",
+        "how do i get into the system",
+        "where do i sign in",
+        "log in as admin",
+        "sign in failed",
+        "why can't i sign in",
+        "wrong password",
+        "this account is not authorized",
+        "sign in popup blocked"
+      ],
+      "responses": [
+        "On the welcome screen choose Admin, then Branch Admin, and sign in with Google or your email and password. If Google's popup is blocked, allow popups for the site and try again. If you see 'not authorized', the account is not on this workspace's allowed list, so ask your administrator."
+      ]
+    },
+    {
+      "tag": "create_account",
+      "patterns": [
+        "how do i create an account",
+        "how to sign up",
+        "register account",
+        "i don't have an account",
+        "make a new account",
+        "create account",
+        "how do i register",
+        "sign up for the tracker",
+        "new user registration",
+        "can i make my own account"
+      ],
+      "responses": [
+        "On the Branch Admin sign-in screen press Create account, enter your full name, email and a password of at least 6 characters, then press Create account. Each account gets its own private workspace."
+      ]
+    },
+    {
+      "tag": "forgot_password",
+      "patterns": [
+        "i forgot my password",
+        "forgot password",
+        "reset my password",
+        "how do i reset password",
+        "lost my password",
+        "change my login password",
+        "password reset email",
+        "i can't remember my password",
+        "send me a reset link",
+        "recover my account"
+      ],
+      "responses": [
+        "On the sign-in screen type your email, then press Forgot password. A reset email will be sent. For a dorm viewer password, ask the Branch Admin to set a new one in the Viewer Access tab."
+      ]
+    },
+    {
+      "tag": "sign_out_session",
+      "patterns": [
+        "how do i sign out",
+        "how to log out",
+        "logout",
+        "sign out",
+        "why am i signed out",
+        "why do i have to sign in again",
+        "does it remember me",
+        "i keep getting logged out",
+        "session expired",
+        "stay signed in"
+      ],
+      "responses": [
+        "Press Sign out at the top right. For safety the app only keeps you signed in for the current browser tab, so closing the tab signs you out and you will need to sign in again next time."
+      ]
+    },
+    {
+      "tag": "dark_mode",
+      "patterns": [
+        "how do i turn on dark mode",
+        "dark mode",
+        "night mode",
+        "light mode",
+        "change theme",
+        "switch theme",
+        "how to change the colors",
+        "toggle theme",
+        "make the screen dark",
+        "where is the moon button",
+        "theme button"
+      ],
+      "responses": [
+        "Press the moon or sun button at the top right of the page to switch between light and dark mode. Your choice is remembered in this browser."
+      ]
+    },
+    {
+      "tag": "add_room",
+      "patterns": [
+        "how do i add a room",
+        "how to create a room",
+        "add a new room",
+        "create room",
+        "where is add room",
+        "i want to add a room",
+        "how to add beds",
+        "make a new room",
+        "add room button",
+        "how do i set up my rooms",
+        "how do i add rooms to the dorm",
+        "new room steps",
+        "register a room"
+      ],
+      "responses": [
+        "Open Room Canvas (or Hallway Layout) and press + Add room. Enter the room number, type, gender, air conditioning, resident group zoning and tenancy mode, pick the capacity (1 to 20 beds), optionally fill in tenants, then press Save room. Room names must be unique."
+      ]
+    },
+    {
+      "tag": "edit_room",
+      "patterns": [
+        "how do i edit a room",
+        "change room details",
+        "update a room",
+        "rename a room",
+        "change the room capacity",
+        "how to edit a bed",
+        "edit tenant information",
+        "change tenant name",
+        "fix a tenant's dates",
+        "modify room settings",
+        "pencil icon",
+        "how do i change gender of a room",
+        "edit room button",
+        "update checkout date of a tenant"
+      ],
+      "responses": [
+        "Press the pencil icon on the room card, or Edit on a bed, change what you need and press Save room. You can rename the room, change gender, zoning, AC and capacity, and edit each bed's tenant, resident group, gender, check-in and checkout. To simply extend a stay, use the Extend button instead."
+      ]
+    },
+    {
+      "tag": "delete_room",
+      "patterns": [
+        "how do i delete a room",
+        "remove a room",
+        "delete room",
+        "trash icon",
+        "how to remove a room from the system",
+        "i want to delete a room",
+        "erase a room",
+        "get rid of a room",
+        "delete room confirmation"
+      ],
+      "responses": [
+        "Press the trash icon on the room card and confirm with Yes, Delete. A room can only be deleted when it has no residents, reservations or temporary clients, so check them out or cancel them first."
+      ]
+    },
+    {
+      "tag": "remove_bed",
+      "patterns": [
+        "how do i remove a bed",
+        "delete one bed",
+        "reduce capacity",
+        "lower the number of beds",
+        "remove bed button",
+        "take out a bed from a room",
+        "decrease room capacity",
+        "how to remove a bedspace",
+        "remove a vacant bed",
+        "add another bed to a room",
+        "increase capacity"
+      ],
+      "responses": [
+        "To remove a bed, press Remove bed on a vacant bed (it only appears on beds with no tenant, reservation or temporary guest). A room needs at least one bed. To add beds, edit the room and choose a bigger capacity."
+      ]
+    },
+    {
+      "tag": "room_settings_explained",
+      "patterns": [
+        "what is resident group zoning",
+        "what does gender assignment mean",
+        "what is the difference between room and bedspacer",
+        "what is air conditioning option",
+        "explain room type",
+        "what is mixed room",
+        "what does students zoning do",
+        "what does reviewees mean",
+        "what is a reviewee",
+        "can i put males in a female room",
+        "why can't i assign a tenant to this room",
+        "what is the ac setting",
+        "explain room settings",
+        "who can stay in a student room"
+      ],
+      "responses": [
+        "Gender assignment (Male, Female or Mixed) limits who can be placed in the room. Resident group zoning (Students, Reviewees or Mixed) limits the kind of resident. Type is Room or Bedspacer, and AC marks air-conditioned rooms. Temporary guests ignore the zoning, and the app blocks any assignment that conflicts with a room's gender or zoning."
+      ]
+    },
+    {
+      "tag": "whole_room",
+      "patterns": [
+        "what is whole room mode",
+        "what is bedspace mode",
+        "difference between bedspace and whole room",
+        "tenancy mode",
+        "rent the whole room to one person",
+        "whole room tenancy",
+        "what does whole room mean",
+        "why is the whole room marked occupied",
+        "only one tenant allowed in room"
+      ],
+      "responses": [
+        "Bedspace mode lets each bed hold its own tenant. Whole Room mode rents the entire room to one resident or one reservation, so once one bed is taken the other beds count as unavailable and the room cannot hold more than one assigned resident."
+      ]
+    },
+    {
+      "tag": "bed_colors",
+      "patterns": [
+        "what do the colors mean",
+        "what does green mean",
+        "what does red mean",
+        "what does purple mean",
+        "what do the status colors mean",
+        "legend",
+        "what is checkout 48h",
+        "what does orange mean",
+        "what is temporary occupied",
+        "bed status meaning",
+        "explain the bed statuses",
+        "what does overdue mean",
+        "what do the dots mean",
+        "what is the blue color",
+        "what does reserved mean"
+      ],
+      "responses": [
+        "Bed statuses: Vacant (green) is free. Occupied (blue) has a tenant. Reserved (purple) is held for an incoming client. Temporary occupied (brown) is a short-stay guest. Checkout 48h (amber) leaves within two days. Overdue (red) is past the checkout date and waits for you to extend or check out."
+      ]
+    },
+    {
+      "tag": "check_in_tenant",
+      "patterns": [
+        "how do i add a tenant",
+        "how to check in a tenant",
+        "assign a tenant to a bed",
+        "put someone in a bed",
+        "how do i move someone into a room",
+        "check in button",
+        "how to register a resident",
+        "add a resident",
+        "how do i assign a bed",
+        "enter tenant name",
+        "walk in tenant",
+        "check in a new tenant now"
+      ],
+      "responses": [
+        "On a vacant bed press Check in (it opens the room editor). Type the tenant name, choose resident group and gender, set the check-in and checkout dates, then Save room. For someone arriving later, use Reserved Clients so the bed is held and checked in automatically."
+      ]
+    },
+    {
+      "tag": "checkout_tenant",
+      "patterns": [
+        "how do i check out a tenant",
+        "how to checkout a resident",
+        "tenant is leaving",
+        "release a bed",
+        "check out button",
+        "how do i make a bed vacant",
+        "remove a tenant from a bed",
+        "a tenant moved out",
+        "end a tenant's stay",
+        "how to clear a bed",
+        "checkout a person",
+        "tenant left what do i do"
+      ],
+      "responses": [
+        "Press Check out on the tenant's bed (also available in Checkout Reminders and Checkout Schedule) and confirm. The bed becomes vacant, any reserved client still keeps the bed, and the tenant's record stays in Tenant History for 30 days. Temporary guests are checked out from the Temporary Dorm Clients tab."
+      ]
+    },
+    {
+      "tag": "overdue",
+      "patterns": [
+        "what are checkout reminders",
+        "why is there a red badge",
+        "someone is overdue",
+        "what to do with overdue tenants",
+        "tenant passed their checkout date",
+        "where are overdue tenants",
+        "red exclamation on the tab",
+        "late tenants",
+        "tenants past checkout",
+        "what is the checkout reminders tab",
+        "how do i handle overdue",
+        "overdue tenant what now",
+        "why is a tab red",
+        "my tenant is late leaving",
+        "tenant did not leave on time",
+        "tenant is still here after checkout date",
+        "a tenant overstayed",
+        "resident has not moved out yet"
+      ],
+      "responses": [
+        "The Checkout Reminders tab lists tenants past their checkout date and shows a red count badge. Each bed stays Overdue until you press Extend (to set a later checkout) or Check out. It also shows who is reserved to arrive next on that bed."
+      ]
+    },
+    {
+      "tag": "extend_stay",
+      "patterns": [
+        "how do i extend a stay",
+        "extend a tenant's contract",
+        "tenant wants to stay longer",
+        "change checkout date",
+        "extend button",
+        "renew a tenant",
+        "how to extend checkout",
+        "push back the checkout date",
+        "tenant is extending",
+        "new checkout date",
+        "why can't i extend",
+        "extend stay when someone has a reservation"
+      ],
+      "responses": [
+        "Press Extend on the tenant's bed, choose a new checkout date that is later than the current one, and save. If a client is reserved for that bed, you must tick the box to cancel that reservation first, and the client returns to Searching so you can pick another bed. Temporary stays cannot be extended here."
+      ]
+    },
+    {
+      "tag": "transfer",
+      "patterns": [
+        "how do i transfer a tenant",
+        "move a tenant to another room",
+        "change a tenant's bed",
+        "transfer resident",
+        "move button",
+        "drag a tenant to another bed",
+        "switch rooms",
+        "relocate a resident",
+        "how to move someone to a different room",
+        "transfer to a vacant bed",
+        "why can't i transfer",
+        "no compatible bed",
+        "bed transfer",
+        "how do i move a tenant",
+        "how to move a tenant to another bed",
+        "move a resident",
+        "can i move someone to a different bed",
+        "how do i move a person to another room"
+      ],
+      "responses": [
+        "Press Move (or Transfer) on the tenant's bed, pick a compatible vacant bed in another room and confirm. You can also drag a tenant card onto a vacant bed. Dates and details are kept. Only beds that match the resident's gender and group are offered, and a bed with a future reservation cannot be moved."
+      ]
+    },
+    {
+      "tag": "reserve_client",
+      "patterns": [
+        "how do i reserve a bed",
+        "how to add a reserved client",
+        "reserve a bed for someone arriving later",
+        "reservation steps",
+        "add reserve client",
+        "book a bed in advance",
+        "how do i reserve a room",
+        "scan for vacancies",
+        "what is reserved clients tab",
+        "how to hold a bed",
+        "reserve for a future check in",
+        "pre book a bed",
+        "how do i use the reservation wizard",
+        "reserve a bed that is still occupied"
+      ],
+      "responses": [
+        "Open Reserved Clients and press + Add reserve client. Choose Single or Group, enter the name(s), gender, resident group, check-in (and optional check-out), then the app scans free beds and beds whose tenant leaves in time. Pick one and confirm. If the current tenant leaves after the arrival date, the app warns you first."
+      ]
+    },
+    {
+      "tag": "group_reservation",
+      "patterns": [
+        "how do i reserve for a group",
+        "group reservation",
+        "reserve beds for several people",
+        "book for a group of students",
+        "add a group",
+        "reserve multiple beds",
+        "how many members can a group have",
+        "group booking",
+        "family reservation",
+        "reserve a whole group in one room"
+      ],
+      "responses": [
+        "In the Add reserve client pop-up choose Group, enter how many members (2 to 12) and their names. The scan then only shows rooms that have enough fitting beds for everyone, so the group can stay in the same room."
+      ]
+    },
+    {
+      "tag": "reservation_undo_delete",
+      "patterns": [
+        "how do i cancel a reservation",
+        "undo a reservation",
+        "delete a reserved client",
+        "remove a reservation",
+        "cancel a booking",
+        "client changed their mind",
+        "reservation undo button",
+        "how to free a reserved bed",
+        "unreserve a bed",
+        "change the reserved bed"
+      ],
+      "responses": [
+        "In Reserved Clients press Undo on the client's card to release the bed and put them back to Searching, or press the trash icon to delete the reservation entirely. Once a client is checked in the reservation cannot be undone."
+      ]
+    },
+    {
+      "tag": "auto_checkin",
+      "patterns": [
+        "does the reservation check in automatically",
+        "when does a reserved client move in",
+        "what happens on the check in date",
+        "automatic check in",
+        "reserved client arrives what happens",
+        "why did the reserved client disappear",
+        "when does reserved become occupied",
+        "reserved client became a tenant",
+        "does the system move reserved clients by itself"
+      ],
+      "responses": [
+        "Yes. When the client's check-in time arrives and the bed is free, the app checks them in automatically, turns the bed to Occupied and removes them from the Reserved list. If the previous tenant is still there, the check-in waits until that tenant's checkout passes."
+      ]
+    },
+    {
+      "tag": "temporary_clients",
+      "patterns": [
+        "what are temporary dorm clients",
+        "how do i add a temporary client",
+        "short stay guest",
+        "temporary room assignment",
+        "guest staying temporarily",
+        "how to place a temporary guest",
+        "temporary client steps",
+        "add temporary client",
+        "waiting for a permanent room",
+        "temporary bed",
+        "how does the temporary flow work",
+        "temporary to permanent transfer"
+      ],
+      "responses": [
+        "Temporary Dorm Clients are guests placed in any free bed (only gender matters) while they wait for a permanent bed. Press + Add temporary client, choose Single or Group, enter details, pick the temporary room, then pick the permanent room they will move to. The temporary checkout date is set to when that permanent bed becomes free."
+      ]
+    },
+    {
+      "tag": "temp_reminder",
+      "patterns": [
+        "why is the temporary tab red",
+        "temporary client reminder",
+        "has the tenant already transferred",
+        "what does not yet mean",
+        "temporary checkout reached",
+        "yes transferred button",
+        "temporary reminders",
+        "temporary guest check out due",
+        "reminder for temporary clients",
+        "what happens when temporary stay ends"
+      ],
+      "responses": [
+        "When a temporary guest's checkout is reached, the Temporary Dorm Clients tab turns red and asks 'Has the tenant already transferred?'. Choose Yes to check them out of the temporary bed, or Not yet and the reminder returns after 24 hours."
+      ]
+    },
+    {
+      "tag": "tenant_history",
+      "patterns": [
+        "where are past tenants",
+        "tenant history",
+        "who left the dorm",
+        "how long is history kept",
+        "see old tenants",
+        "deleted tenants",
+        "history of checkouts",
+        "how long are records kept",
+        "where did the checked out tenant go",
+        "former residents",
+        "30 days history",
+        "when are old records deleted"
+      ],
+      "responses": [
+        "The Tenant History tab lists tenants who were checked out, removed or replaced, with their room, stay dates and what happened. Records are deleted automatically after 30 days, and the table shows how many days each one has left."
+      ]
+    },
+    {
+      "tag": "hallway",
+      "patterns": [
+        "what is hallway layout",
+        "how do i move rooms on the map",
+        "layout locked",
+        "how do i unlock the layout",
+        "rearrange the rooms",
+        "drag the rooms",
+        "dorm floor plan",
+        "how to edit the hallway map",
+        "why can't i drag the rooms",
+        "hallway map",
+        "room positions",
+        "layout lock button",
+        "where is the floor plan",
+        "can i drag rooms around",
+        "how do i rearrange the layout",
+        "move rooms on the floor plan",
+        "can i change room positions on the map"
+      ],
+      "responses": [
+        "Hallway Layout is a floor map of your rooms with a dot for each bed. It starts locked to prevent accidents. Press Layout locked to unlock it, then drag rooms to reposition them. Lock it again when you're done. Viewers see the same map without any names."
+      ]
+    },
+    {
+      "tag": "shapes",
+      "patterns": [
+        "how do i add a facility",
+        "add a cr or lobby to the map",
+        "add a shape",
+        "how to resize a shape",
+        "rotate the label",
+        "add a walkway",
+        "how to add a corridor",
+        "delete a shape",
+        "change shape color",
+        "facility shape",
+        "add office to the layout",
+        "circle or triangle shape",
+        "edit selected shape",
+        "add stairs to the map"
+      ],
+      "responses": [
+        "Unlock Hallway Layout and press + Add Facility / Shape. Enter a label (like CR or Lobby), choose Facility or Corridor, rectangle, circle or triangle, and a color. Click a shape to select it, then use the handles to resize, and the small toolbar to rotate the text, edit or delete it."
+      ]
+    },
+    {
+      "tag": "bed_matrix",
+      "patterns": [
+        "what is the bed matrix",
+        "table of all beds",
+        "list every bed",
+        "see all tenants in a table",
+        "bed matrix tab",
+        "contract start and end table",
+        "where can i see all contract dates",
+        "spreadsheet view",
+        "overview of all beds",
+        "show all beds in one table"
+      ],
+      "responses": [
+        "Bed Matrix is a table with one row per bed: room, bed, gender, tenant, contract start and end, status, AC and quick actions like Edit or Move. It respects the filters at the top of the page."
+      ]
+    },
+    {
+      "tag": "analytics",
+      "patterns": [
+        "what is analytics",
+        "occupancy chart",
+        "where can i see statistics",
+        "how full is the dorm",
+        "analytics tab",
+        "donut chart",
+        "room capacities and vacancies",
+        "bed occupancy distribution",
+        "show me the graphs",
+        "dorm statistics",
+        "occupancy overview chart",
+        "what does the analytics page show"
+      ],
+      "responses": [
+        "Analytics shows a donut chart of bed occupancy (vacant, occupied, overdue, reserved) and a list of each room's capacity and vacancy with progress bars. It follows the shared filters at the top."
+      ]
+    },
+    {
+      "tag": "checkout_schedule",
+      "patterns": [
+        "what is checkout schedule",
+        "who is leaving this month",
+        "upcoming checkouts",
+        "checkout calendar",
+        "what is near moderate far",
+        "how do i use the carousel",
+        "jump to active",
+        "calendar button",
+        "see checkouts by month",
+        "how to find a checkout date",
+        "checkout schedule tab",
+        "months carousel",
+        "why are checkouts colored",
+        "upcoming departures",
+        "can i see who is leaving next week",
+        "who is checking out soon",
+        "who is leaving this week",
+        "list of upcoming departures",
+        "which tenants leave next month",
+        "when is someone checking out"
+      ],
+      "responses": [
+        "Checkout Schedule shows departures by month in a swipeable 3D carousel. Drag, use the arrows or the left and right keys to change months, Jump to Active goes to the nearest upcoming checkout, and Calendar lets you pick a date. Filters: Near is overdue or 0 to 3 days, Moderate is 4 to 10 days, Far is 11 days or more. Each card has Edit, Extend, Check out and Inspect."
+      ]
+    },
+    {
+      "tag": "filters",
+      "patterns": [
+        "how do i search for a tenant",
+        "how to filter rooms",
+        "find a room",
+        "search by name",
+        "filter by gender",
+        "show only vacant rooms",
+        "filter by students",
+        "where is the search bar",
+        "how do i find a vacant bed",
+        "filter by status",
+        "show only female rooms",
+        "search tenant",
+        "find vacant beds quickly",
+        "clear filters"
+      ],
+      "responses": [
+        "The filter bar at the top of every tab lets you filter by gender, status (vacant, occupied, overdue, reserved, temporary, full rooms) and resident group, and search by room, bed or tenant name. The same filters apply to Room Canvas, Hallway Layout, Bed Matrix, Analytics, Checkout Schedule and Reserved Clients."
+      ]
+    },
+    {
+      "tag": "stats_meaning",
+      "patterns": [
+        "what does occupancy rate mean",
+        "what are the numbers at the top",
+        "how is occupancy calculated",
+        "what is the stat strip",
+        "what do the top boxes show",
+        "total beds meaning",
+        "what is turnover rooms",
+        "how is vacancy rate computed",
+        "explain the dashboard numbers",
+        "what counts as occupied in the stats"
+      ],
+      "responses": [
+        "The boxes at the top show total rooms, bed capacity, vacant beds, occupied beds, overdue beds and the occupancy percentage. Occupied includes regular tenants, checkout-soon and temporary guests, and overdue tenants still count as occupying a bed until you check them out."
+      ]
+    },
+    {
+      "tag": "viewer_setup",
+      "patterns": [
+        "how do i set up viewer access",
+        "let people check vacancies",
+        "share the vacancy list",
+        "create a dorm code",
+        "viewer access tab",
+        "how do i give someone access to see rooms",
+        "set a viewer password",
+        "turn on viewer access",
+        "how to share vacancies without names",
+        "public vacancy page",
+        "how do i make a viewer link",
+        "dorm code and password",
+        "how do i give viewers access",
+        "how can people see my vacancies",
+        "let others see room availability",
+        "give access to viewers",
+        "how do i share my dorm with viewers"
+      ],
+      "responses": [
+        "Open the Viewer Access tab, enter an optional dorm name, choose a dorm code (4 to 30 letters, numbers or dashes) and a password of 8+ characters, then press Turn on viewer access. Give viewers the viewer page link, the code and the password. They only see rooms, counts and the hallway map, never names or dates."
+      ]
+    },
+    {
+      "tag": "viewer_manage",
+      "patterns": [
+        "how do i block a viewer",
+        "remove a viewer",
+        "pause viewer access",
+        "change the viewer password",
+        "who joined as a viewer",
+        "unblock a viewer",
+        "turn off viewer access",
+        "delete the dorm code",
+        "kick someone out of viewer",
+        "see list of viewers",
+        "forgot the viewer password",
+        "blocked list",
+        "how to change dorm password for viewers",
+        "change the viewer access password",
+        "how do i reset the dorm code password",
+        "new password for viewers",
+        "how do i stop viewers from seeing the dorm"
+      ],
+      "responses": [
+        "In Viewer Access you can Copy link, Pause access, Change password (this removes everyone, who must rejoin with the new one), Turn off and delete, see everyone who joined, and Block or Unblock them. If your dorm is linked to a Super Admin, changing the password or deleting the server needs their approval first."
+      ]
+    },
+    {
+      "tag": "viewer_how_to_use",
+      "patterns": [
+        "how do i view vacancies as a viewer",
+        "i am a viewer how do i join",
+        "where do i enter the dorm code",
+        "viewer page",
+        "i can't join the dorm",
+        "wrong dorm code",
+        "access ended message",
+        "why was my access removed",
+        "switch server",
+        "viewer sign in",
+        "i don't know the dorm password",
+        "what can viewers do",
+        "how do i see room availability"
+      ],
+      "responses": [
+        "Open the viewer page, sign in with Google or email, then enter the dorm code and password your administrator gave you. You'll see Vacancies, Hallway layout and Analytics. If you see 'Access ended', the administrator paused access or removed you. Use Switch server to enter another dorm's code."
+      ]
+    },
+    {
+      "tag": "central_link",
+      "patterns": [
+        "what is central link",
+        "how do i connect to a super admin",
+        "generate pairing code",
+        "pairing code",
+        "what is directory access",
+        "what is analytics access",
+        "revoke access to super admin",
+        "disconnect from central platform",
+        "what data does the super admin see",
+        "how do i link my dorm",
+        "approve directory request",
+        "central platform",
+        "does the super admin see tenant names",
+        "connection request from super admin"
+      ],
+      "responses": [
+        "In the Central Link tab enter your dormitory name and city, press Generate pairing code and give the short-lived code to the Super Admin. They send a request, and you approve or reject Directory access and Analytics access separately. You can revoke or disconnect anytime. Only counts are shared, never resident names."
+      ]
+    },
+    {
+      "tag": "data_transfer",
+      "patterns": [
+        "how do i transfer my data to another account",
+        "the admin is resigning",
+        "hand over the dorm to a new admin",
+        "data transfer tab",
+        "move all data to a new account",
+        "transfer code",
+        "receive data from another account",
+        "new admin takes over",
+        "how to change admin account",
+        "what is moved in a data transfer",
+        "transfer ownership"
+      ],
+      "responses": [
+        "In Data Transfer, the old admin writes the purpose and presses Generate transfer code (valid about a day). The new admin, using an empty account, enters it under Receive data, and the old admin approves. Rooms, reservations, temporary clients, history and layout move over and the old account is left empty. Viewer access and the Super Admin link are not moved, so set them up again."
+      ]
+    },
+    {
+      "tag": "import_rooms",
+      "patterns": [
+        "what is import my existing rooms",
+        "import button missing",
+        "how do i import rooms",
+        "load sample data",
+        "import from spreadsheet",
+        "bulk add rooms",
+        "where is the import button",
+        "import excel data",
+        "seed data",
+        "upload my rooms"
+      ],
+      "responses": [
+        "Import my existing rooms loads the sample data from seed-data.js, and it only appears when you run the project from your own computer, not on the live site, because the file contains real names. On the live site, add rooms with + Add room."
+      ]
+    },
+    {
+      "tag": "privacy",
+      "patterns": [
+        "is my data safe",
+        "who can see my tenants",
+        "are names shared",
+        "is resident information private",
+        "can viewers see tenant names",
+        "data privacy",
+        "who sees my data",
+        "is it secure",
+        "does the super admin see names",
+        "how is the password stored",
+        "can other admins see my rooms",
+        "how long is data kept"
+      ],
+      "responses": [
+        "Your rooms and tenants live in your own private workspace that only your account can read. Viewers and Super Admins only receive name-free counts, and only after you enable it. Dorm passwords are never stored, only a one-way fingerprint."
+      ]
+    },
+    {
+      "tag": "live_updates",
+      "patterns": [
+        "does it update automatically",
+        "is the data live",
+        "do i need to refresh",
+        "real time updates",
+        "why did the page change by itself",
+        "how often does it refresh",
+        "does it sync across devices",
+        "can two people use it at once",
+        "when do viewers see changes",
+        "page not updating"
+      ],
+      "responses": [
+        "Yes, data syncs live, so no refresh is needed, and the time-based statuses refresh every minute. Viewers see changes while an admin has the app open. If nobody has it open, they see the last published state."
+      ]
+    },
+    {
+      "tag": "duplicate_room",
+      "patterns": [
+        "room already exists",
+        "duplicate room name",
+        "why can't i save the room",
+        "could not save the room",
+        "error saving room",
+        "room name is taken",
+        "room changed while the editor was open",
+        "save room failed",
+        "i get an error when adding a room",
+        "why is my room not saving"
+      ],
+      "responses": [
+        "Common reasons a room won't save: the room name already exists, a checkout is not later than its check-in, the gender or zoning conflicts with a tenant already in a bed, or the room was changed elsewhere while you had it open (close and reopen it). The message under the field tells you which one."
+      ]
+    },
+    {
+      "tag": "blocked_actions",
+      "patterns": [
+        "why can't i change this bed",
+        "a bed with a reservation cannot be changed",
+        "capacity cannot be reduced",
+        "why can't i delete this",
+        "action is blocked",
+        "why is the button missing",
+        "why can't i edit a temporary client",
+        "reservation blocks editing",
+        "why is the extend button not showing",
+        "why is move not available"
+      ],
+      "responses": [
+        "Some actions are locked on purpose. Beds with a confirmed reservation can't be edited until you Undo it. Temporary guests must be checked out from their own tab. Capacity can't go below beds that hold residents or reservations, and rooms with residents can't be deleted."
+      ]
+    },
+    {
+      "tag": "super_admin_marketing",
+      "patterns": [
+        "how do i become a super admin",
+        "what can super admin do",
+        "what is the dormitory directory",
+        "marketing viewer directory",
+        "how do i see all dormitories",
+        "super admin analytics chart",
+        "how do i connect a dormitory as super admin",
+        "what is the super admin server",
+        "directory of available beds",
+        "how do i find a dorm with vacancies",
+        "super admin sign in"
+      ],
+      "responses": [
+        "A Super Admin signs in from Admin, Super Admin, activates their account, and connects dorms using each Branch Admin's pairing code. After the branch approves, they see live vacancy cards, trend charts with forecasts and an inbox. Marketing Viewers use a Super Admin's server code and password to browse the directory of published dorms."
+      ]
+    },
+    {
+      "tag": "live_vacant",
+      "patterns": [
+        "how many vacant beds do i have",
+        "how many beds are available",
+        "how many vacancies",
+        "which rooms have vacancies",
+        "show me available beds",
+        "any free beds right now",
+        "how many empty beds",
+        "which rooms are vacant",
+        "current vacancy count",
+        "do we have space",
+        "how many rooms have space",
+        "vacant beds now",
+        "available beds today"
+      ],
+      "responses": [
+        "Here are your current vacancies."
+      ]
+    },
+    {
+      "tag": "live_overdue",
+      "patterns": [
+        "who is overdue",
+        "how many overdue tenants",
+        "are there any overdue",
+        "who passed their checkout",
+        "list overdue tenants",
+        "who needs to be checked out",
+        "any late tenants right now",
+        "overdue count",
+        "which tenants are late"
+      ],
+      "responses": [
+        "Here are the tenants past their checkout."
+      ]
+    },
+    {
+      "tag": "live_occupancy",
+      "patterns": [
+        "what is my occupancy rate",
+        "how full is the dorm right now",
+        "current occupancy",
+        "how many beds are occupied",
+        "how many tenants do i have",
+        "total beds",
+        "how many rooms do i have",
+        "what percent full are we",
+        "occupancy today",
+        "dorm capacity right now"
+      ],
+      "responses": [
+        "Here is your current occupancy."
+      ]
+    },
+    {
+      "tag": "ask_to_change",
+      "patterns": [
+        "add a room for me",
+        "delete this room for me",
+        "can you check out the tenant",
+        "please reserve a bed for me",
+        "can you make changes",
+        "can you edit my data",
+        "do it for me",
+        "can you move the tenant",
+        "create the room automatically",
+        "can you add a tenant",
+        "can you update my records",
+        "change the checkout date for me"
+      ],
+      "responses": [
+        "I can't change your records. I explain how and read your current counts. Tell me what you want to do, like add a room, extend a stay or reserve a bed, and I'll give you the exact steps."
+      ]
+    },
+    {
+      "tag": "contact_support",
+      "patterns": [
+        "who do i contact for help",
+        "i found a bug",
+        "something is broken",
+        "report a problem",
+        "contact the developer",
+        "customer support",
+        "the website is not working",
+        "how do i get support",
+        "who maintains this system",
+        "talk to a human"
+      ],
+      "responses": [
+        "For bugs or account problems, contact your dormitory administrator or the developer who set up this tracker, and describe what you pressed and the message you saw. I can help with how-to questions."
+      ]
+    },
+    {
+      "tag": "offtopic",
+      "patterns": [
+        "what is the weather today",
+        "tell me a joke",
+        "recipe for adobo",
+        "who won the basketball game",
+        "write me a poem",
+        "solve this math problem",
+        "what is the capital of france",
+        "bitcoin price",
+        "help with my homework",
+        "recommend a movie",
+        "write python code",
+        "who is the president",
+        "how do i lose weight",
+        "song lyrics",
+        "tell me about world history",
+        "translate this to spanish",
+        "what is the meaning of life",
+        "best phone to buy",
+        "write an essay",
+        "what time is it in tokyo",
+        "give me a fun fact",
+        "play music",
+        "news today",
+        "how do i cook rice",
+        "who is the richest man",
+        "what's the weather",
+        "how is the weather",
+        "is it going to rain",
+        "tell me about adobo",
+        "what should i eat for dinner",
+        "who is the best basketball player"
+      ],
+      "responses": [
+        "I only know about this Vacancy Tracker."
+      ]
+    }
+  ],
+  "fallback_responses": [
+    "I'm not sure I understood. Could you rephrase it or mention the tab or feature, like reservations, checkout, viewer access or hallway layout?",
+    "I couldn't match that to a tracker feature. Try asking something like 'how do I extend a stay?' or 'how do I add a room?'."
+  ]
+}

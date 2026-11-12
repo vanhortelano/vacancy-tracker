@@ -1,0 +1,6 @@
+flask
+psycopg[binary]
+psycopg-pool
+firebase-admin
+scikit-learn
+gunicorn

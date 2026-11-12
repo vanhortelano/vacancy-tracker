@@ -1,0 +1,49 @@
+/* Logo-as-menu: slide-in drawer (pages with tabs) and small pop-up menu (login pages etc.) */
+.mx-logo{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mx-logo:focus-visible{outline:2px solid #7c5cff;outline-offset:3px}
+.mx-backdrop{position:fixed;inset:0;background:rgba(10,12,30,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .28s;z-index:55}
+body.menu-open .mx-backdrop,body.pop-open .mx-backdrop{opacity:1;pointer-events:auto}
+/* Branch admin: tabs drawer */
+@media (min-width:861px){#app{padding-left:0!important}header.topbar{margin-left:0!important}}
+nav.tabs{position:fixed!important;left:0;top:64px;bottom:0;width:250px!important;z-index:60;display:flex!important;flex-direction:column!important;gap:4px;overflow-y:auto;overflow-x:hidden;padding:14px 12px!important;background:var(--card);border-right:1px solid var(--line);border-bottom:0!important;transform:translateX(-105%);transition:transform .28s cubic-bezier(.4,0,.2,1),box-shadow .28s;box-shadow:none}
+body.menu-open nav.tabs{transform:none;box-shadow:12px 0 40px rgba(0,0,0,.18)}
+nav.tabs button{width:100%;text-align:left;white-space:normal}
+@media (max-width:860px){nav.tabs{top:57px}}
+/* Super admin: sidebar drawer */
+.shell{grid-template-columns:1fr!important}
+.shell .side{position:fixed!important;inset:0 auto 0 0!important;width:250px;height:auto!important;z-index:60;flex-direction:column!important;padding:22px 16px!important;border:0!important;border-right:1px solid var(--line)!important;transform:translateX(-105%);transition:transform .28s cubic-bezier(.4,0,.2,1),box-shadow .28s}
+body.menu-open .shell .side{transform:none;box-shadow:12px 0 40px rgba(0,0,0,.18)}
+.shell .side .brand{display:flex!important}.shell .side .me{display:block!important}.shell .side .sp{display:block!important}
+.shell .nav{display:grid!important;width:auto!important}.shell .nav button{flex-direction:row!important;flex:none!important;font-size:inherit!important;padding:11px 13px!important}
+.menu-logo{border:0;flex:none;margin-right:2px}
+/* Pop-up menu */
+.mx-pop{position:fixed;z-index:90;left:0;top:0;bottom:0;width:min(270px,82vw);padding:76px 14px 20px;border-right:1px solid var(--line,#ddd);background:var(--card,#fff);color:var(--ink,#111);box-shadow:12px 0 40px rgba(0,0,0,.22);transform:translateX(-105%);transition:transform .28s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.mx-pop.open{transform:none;pointer-events:auto}
+.mx-pop button,.mx-pop a{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:9px;background:none;color:inherit;font:inherit;font-size:14px;text-decoration:none;cursor:pointer;text-align:left}
+.mx-pop button:hover,.mx-pop a:hover{background:rgba(124,92,255,.12)}
+.mx-pop svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hero-theme-toggle i,.mobile-theme-toggle i{display:none}
+.hero-theme-toggle::before,.mobile-theme-toggle::before{font-family:"Font Awesome 6 Free";font-weight:900;content:"\e4da"}
+.v-role-link{display:block;margin:14px 4px 0;text-align:center;font-size:13px;font-weight:600;color:var(--ink-soft,#667);text-decoration:none}
+.v-role-link:hover{text-decoration:underline}
+
+.back-to-roles{height:0!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden;opacity:0;pointer-events:none}
+#app .brand-mark{cursor:pointer;padding:6px 10px;border-radius:10px;transition:background .15s}#app .brand-mark:hover{background:rgba(124,92,255,.12)}
+#app .brand-mark .dot{width:12px;height:12px}
+
+/* Hamburger button (3 lines) */
+.menu-btn{flex:none;width:42px;height:42px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;margin-right:10px;padding:0;border:1px solid var(--line,#ddd);border-radius:12px;background:var(--card,#fff);cursor:pointer;transition:background .15s,border-color .15s}
+.menu-btn:hover{background:rgba(124,92,255,.12);border-color:#7c5cff}
+.menu-btn span{display:block;width:18px;height:2px;border-radius:2px;background:var(--ink,#111);transition:transform .25s,opacity .2s}
+body.menu-open .menu-btn[data-menu-toggle] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+body.menu-open .menu-btn[data-menu-toggle] span:nth-child(2){opacity:0}
+body.menu-open .menu-btn[data-menu-toggle] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.menu-btn{position:relative;z-index:70}
+
+.menu-btn[data-count]:not([data-count=""])::after{content:attr(data-count);position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:#dc2626;color:#fff;font-size:11px;font-weight:700;line-height:19px;text-align:center;box-shadow:0 2px 6px rgba(220,38,38,.5)}
+body.menu-open .menu-btn[data-count]::after{opacity:.0}
+
+.mx-here{margin:0 0 10px;padding:12px 14px;border-radius:12px;background:rgba(124,92,255,.12);display:grid;gap:2px}
+.mx-here small{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft,var(--soft,#667))}
+.mx-here b{font-size:15px;color:var(--ink,#111)}
+.mx-initial{display:inline-grid;place-items:center;border-radius:50%;color:#fff;font-weight:700;font-size:14px;flex:none}

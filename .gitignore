@@ -1,0 +1,7 @@
+# never upload secrets or real tenant data
+backup.json
+*adminsdk*.json
+seed-data.js
+__pycache__/
+*.pyc
+.env

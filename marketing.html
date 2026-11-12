@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dormitory Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="central-ui.css">
+<link rel="stylesheet" href="menu.css">
+<link rel="stylesheet" href="datepick.css">
+<link rel="stylesheet" href="auth-ui.css">
+</head>
+<body>
+
+<div class="auth" id="authView" hidden>
+  <aside class="auth-hero">
+    <div class="brand"><span class="logo" id="heroLogo"></span><div><b>TERRINSPROJECT</b><small>Dormitory Management System</small></div></div>
+    <div>
+      <h2>Find an available bed, fast.</h2>
+      <p>Browse every participating dormitory with live vacancy counts, locations and availability by gender, resident type and aircon.</p>
+      <div class="feat" id="feat"></div>
+    </div>
+    <small style="opacity:.6">Resident names and personal details are never shown.</small>
+  </aside>
+  <section class="auth-form"><div class="auth-box">
+    <div style="display:flex;justify-content:space-between;align-items:center"><span class="chip" style="background:var(--acc-soft);color:var(--acc)">MARKETING VIEWER</span><button class="btn theme-btn" id="themeA" type="button" aria-label="Toggle theme"></button></div>
+    <h1 style="margin-top:18px">Sign in to the directory</h1><p class="sub">View-only access to approved dormitory summaries.</p>
+    <div id="authMount"></div>
+  </div></section>
+</div>
+
+<div style="min-height:100vh;display:grid;place-items:center;padding:20px" id="errView" hidden>
+  <div class="notice"><h1 id="errTitle">Directory unavailable</h1><p class="det" id="errText" style="margin:10px 0 18px"></p><button class="btn full" id="errOut" type="button">Sign out</button></div>
+</div>
+
+<div style="min-height:100vh;display:grid;place-items:center;padding:20px" id="gateView" hidden>
+  <div class="notice" style="max-width:420px;width:100%"><h1>Enter the server code</h1><p class="det" style="margin:10px 0 16px" id="gateText">Enter the server code and password given by your Super Admin.</p>
+    <div class="field"><label for="gCode">Server code</label><input id="gCode" autocomplete="off"></div>
+    <div class="field"><label for="gPw">Password</label><input id="gPw" type="password" autocomplete="off"></div>
+    <button class="btn pri full" id="gBtn" type="button" style="margin-top:16px">Enter</button><div class="msg" id="gMsg" role="status"></div>
+    <button class="btn full" id="gOut" type="button" style="margin-top:10px">Sign out</button></div>
+</div>
+
+<div id="dormModal" hidden style="position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:20px;background:rgba(10,12,30,.55)">
+  <div class="notice" style="max-width:420px;width:100%"><h1 id="dmTitle">View as dormitory viewer</h1><p class="det" style="margin:10px 0 16px">Enter the dorm server code and password from the dorm's Branch Admin. You stay signed in with this account.</p>
+    <div class="field"><label for="dmCode">Dorm code</label><input id="dmCode" autocomplete="off"></div>
+    <div class="field"><label for="dmPw">Dorm password</label><input id="dmPw" type="password" autocomplete="off"></div>
+    <div style="display:flex;gap:10px;margin-top:16px"><button class="btn full" id="dmCancel" type="button">Cancel</button><button class="btn pri full" id="dmGo" type="button">Open dorm</button></div><div class="msg" id="dmMsg" role="status"></div></div>
+</div>
+
+<div id="app" hidden>
+  <header class="bar">
+    <button class="menu-btn mx-logo" type="button" data-menu-popup aria-label="Menu" title="Menu"><span></span><span></span><span></span></button>
+    <div class="brand" style="color:var(--ink)"><span class="logo" id="topLogo" style="background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff"></span><div><h1 style="font-size:18px">Dormitory Directory</h1></div></div>
+    <span class="sp"></span><span class="live"><i></i>Live</span>
+    <button class="btn theme-btn" id="themeB" type="button" aria-label="Toggle theme"></button>
+    <button class="btn sm" id="outBtn" type="button">Sign out</button>
+  </header>
+  <div class="page">
+    <div class="hero"><h1>Find your dormitory</h1><p>Live availability from every participating branch. Updated automatically.</p></div>
+    <div class="stats" id="stats"></div>
+    <div class="tools">
+      <label class="search"><span id="sIco"></span><input id="q" type="search" placeholder="Search by name or city" aria-label="Search dormitories"></label>
+      <select class="btn" id="sort" aria-label="Sort"><option value="vac">Most vacancies</option><option value="name">Name A–Z</option></select>
+    </div>
+    <div class="tools" id="filters" role="group" aria-label="Filters"></div>
+    <div id="list"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="sqlstore.js"></script>
+<script src="auth-ui.js"></script>
+<script src="js/proof.js"></script>
+<script src="central-ui.js"></script>
+<script type="module">
+import {getFirestore,collection,onSnapshot,doc,getDoc,setDoc,serverTimestamp} from "./sqlstore-modular.js";
+
+const {$,esc,icon,dormCard}=CUI;
+const show=v=>["authView","errView","app","gateView"].forEach(id=>$(id).hidden=id!==v);
+CUI.theme($("themeA"));CUI.theme($("themeB"));
+$("heroLogo").innerHTML=$("topLogo").innerHTML=icon("building");$("sIco").innerHTML=icon("search");
+$("feat").innerHTML=[["bed","Live vacant and occupied bed counts"],["pin","Browse by location"],["users","Filter by gender, student or reviewee, and aircon"]].map(([i,t])=>`<div><span>${icon(i)}</span>${t}</div>`).join("");
+
+const cfg=window.FIREBASE_CONFIG;
+const db=getFirestore();   // SQL-backed data client; Firebase is used for sign-in only
+let auth=null;
+SQLSTORE.setTokenProvider(()=>VecancyAuth.token());
+let unsub=null,items=[],loaded=false,painted=false,filter="all",first=true;
+
+const out=()=>VecancyAuth.signOut();$("outBtn").onclick=out;$("errOut").onclick=out;
+
+let unsubMember=null;
+const centralOk=async u=>{ // is this account a joined (and not blocked) viewer of a Super Admin server?
+  const code=sessionStorage.getItem("centralCode");if(!code)return false;
+  try{const m=await getDoc(doc(db,"centralAccess",code,"viewers",u.uid));return m.exists()&&m.data().proof!==undefined}catch(e){return false}
+};
+const gate=(msg)=>{show("gateView");$("gMsg").textContent=msg||"";$("gMsg").classList.toggle("err",!!msg)};
+$("gOut").onclick=()=>{sessionStorage.removeItem("centralCode");VecancyAuth.signOut()};
+$("gBtn").onclick=async()=>{
+  const u=auth.currentUser,code=normalizeDormCode($("gCode").value),pw=$("gPw").value;
+  if(!u)return;if(!isValidDormCode(code)||!pw)return gate("Enter the server code and password.");
+  try{
+    const proof=await viewerProof(code,pw),ref=doc(db,"centralAccess",code,"viewers",u.uid),ex=await getDoc(ref);
+    if(!(ex.exists()&&ex.data().proof===proof))await setDoc(ref,{proof,name:u.displayName||"",email:u.email||"",joinedAt:serverTimestamp()});
+    sessionStorage.setItem("centralCode",code);$("gPw").value="";startApp(u);
+  }catch(e){gate("Those details don't match, the server is paused, or you were blocked. Check with your Super Admin.")}
+};
+$("gPw").onkeydown=e=>{if(e.key==="Enter")$("gBtn").click()};
+
+function startApp(u){
+  if(unsub){unsub();unsub=null}if(unsubMember){unsubMember();unsubMember=null}items=[];loaded=false;painted=false;
+  show("app");render();
+  // if the Super Admin blocks or removes this viewer, send them back to the code screen
+  unsubMember=onSnapshot(doc(db,"centralAccess",sessionStorage.getItem("centralCode"),"viewers",u.uid),sn=>{if(!sn.exists()){if(unsub){unsub();unsub=null}sessionStorage.removeItem("centralCode");gate("Your access to this server ended. Enter the code and password again.")}},()=>{});
+  unsub=onSnapshot(collection(db,"directory"),snap=>{items=snap.docs.map(d=>({id:d.id,...d.data()}));loaded=true;render()},e=>{
+    $("errTitle").textContent="Directory unavailable";
+    $("errText").textContent="Could not read the directory ("+(e.code||e.message)+"). The central database may not be set up yet.";show("errView")});
+}
+async function onUser(u){
+  if(unsub){unsub();unsub=null}if(unsubMember){unsubMember();unsubMember=null}items=[];loaded=false;painted=false;
+  if(await centralOk(u))startApp(u);else gate();
+}
+function onSignedOut(){
+  if(unsub){unsub();unsub=null}if(unsubMember){unsubMember();unsubMember=null}items=[];loaded=false;painted=false;
+  show("authView");
+}
+VecancyAuth.init({mount:"#authMount",onUser,onSignedOut});
+auth=VecancyAuth.auth;
+if(!auth)show("authView");
+
+/* Click a dormitory -> pop-up for its dorm code + password -> opens as a dormitory viewer (same account, no new sign-in) */
+$("list").addEventListener("click",e=>{if(e.target.closest("a"))return;const c=e.target.closest(".dc");if(!c)return;const b=c.querySelector("[data-open]");if(!b)return;
+  $("dmTitle").textContent="View "+b.dataset.open+" as dormitory viewer";$("dmCode").value="";$("dmPw").value="";$("dmMsg").textContent="";$("dormModal").hidden=false;$("dmCode").focus()});
+$("dmCancel").onclick=()=>$("dormModal").hidden=true;
+$("dmGo").onclick=()=>{const code=$("dmCode").value.trim(),pw=$("dmPw").value;if(!code||!pw){$("dmMsg").textContent="Enter the dorm code and password.";$("dmMsg").classList.add("err");return}
+  sessionStorage.setItem("dormJoin",JSON.stringify({code,password:pw}));location.href="viewer.html?via=marketing"};
+$("dmPw").onkeydown=e=>{if(e.key==="Enter")$("dmGo").click()};
+
+const FILTERS=[["all","All"],["vac","Has vacancy"],["male","Male vacant"],["female","Female vacant"],["mixed","Mixed gender vacant"],["mixedgroup","Mixed student/reviewee vacant"],["student","Student vacant"],["reviewee","Reviewee vacant"],["ac","Aircon vacant"],["nonac","Non-aircon vacant"]];
+const key={vac:"vacant",male:"maleVacant",female:"femaleVacant",mixed:"mixedVacant",mixedgroup:"mixedGroupVacant",student:"studentVacant",reviewee:"revieweeVacant",ac:"acVacant",nonac:"nonAcVacant"};
+$("filters").innerHTML=FILTERS.map(([k,t])=>`<button class="chip-f" data-f="${k}">${t}</button>`).join("");
+$("filters").onclick=e=>{const b=e.target.closest("[data-f]");if(b){filter=b.dataset.f;painted=true;render()}};
+$("q").oninput=()=>{painted=true;render()};$("sort").onchange=()=>{painted=true;render()};
+
+function render(){
+  document.querySelectorAll("[data-f]").forEach(b=>b.classList.toggle("on",b.dataset.f===filter));
+  const sum=k=>items.reduce((a,s)=>a+(s[k]||0),0),cities=new Set(items.map(s=>(s.location||"").trim().toLowerCase()).filter(Boolean)).size;
+  const st=(i,c,n,t)=>`<div class="stat"><span class="ico ${c}">${icon(i)}</span><div><b>${n}</b><span>${t}</span></div></div>`;
+  $("stats").innerHTML=st("building","",items.length,"Dormitories listed")+st("bed","r",sum("vacant"),"Vacant beds available")+st("pin","a",cities,"Locations");
+  if(!loaded){$("list").innerHTML=`<div class="cards"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>`;return}
+  const term=$("q").value.trim().toLowerCase();
+  let l=items.filter(s=>(!term||(s.dormName+" "+s.location).toLowerCase().includes(term))&&(filter==="all"||(s[key[filter]]||0)>0));
+  l.sort($("sort").value==="name"?(a,b)=>a.dormName.localeCompare(b.dormName):(a,b)=>b.vacant-a.vacant||a.dormName.localeCompare(b.dormName));
+  const rise=first;first=false;
+  $("list").innerHTML=l.length?`<div class="cards">${l.map(s=>dormCard(s,s,`<button class="btn sm pri full" type="button" data-open="${esc(s.dormName)}" style="margin-top:10px">View as dormitory viewer</button>`,rise)).join("")}</div>`
+    :`<div class="empty">${icon("search")}<div><b>${items.length?"No dormitories match":"No dormitories are listed yet"}</b></div>${items.length?"Try a different search or filter.":"Dormitories appear here after their Branch Admin approves publishing."}</div>`;
+}
+</script>
+<script src="menu.js"></script>
+<script src="datepick.js"></script>
+</body>
+</html>
